@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.theverge.mapper.contentsMapper">
+	<select id="getTopics" resultType="ContentsDTO">
+	select * from contents where writtendate >= date_add(now(),INTERVAL -100 day);
+	</select>
+	
+	<select id="getArticle" resultType="ContentsDTO">
+	select num,writer,content,date_format(writtendate,'%b %d, %Y, %H:%i %p') as writtendate,imageurl,category,title,href from contents where num=#{num};
+	</select>
+</mapper>

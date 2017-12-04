@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.theverge.mapper.boardMapper">
+	<sql id="search">
+		<if test='keyword != null and !keyword.equals("")'>
+			and
+			<if test="searchType != null">
+				<if test="searchType == 'title'.toString()">
+					title like CONCAT('%',#{keyword},'%')
+
+				</if>
+				<if test="searchType == 'writer'.toString()">
+					writer like CONCAT('%',#{keyword},'%')
+
+				</if>
+				<if test="searchType == 'content'.toString()">
+					content like CONCAT('%',#{keyword},'%')
+
+				</if>
+				<if test="searchType == 'all'.toString()">
+					title like CONCAT('%',#{keyword},'%') OR writer like
+					CONCAT('%',#{keyword},'%')
+					or content like
+					CONCAT('%',#{keyword},'%')
+
+
+
+				</if>
+			</if>
+
+		</if>
+	</sql>
+	<select id="getList" resultType="BoardDTO">
+		select @rownum:=@rownum+1 as rownum,a.* from board a,(SELECT
+		@ROWNUM:=0) TMP where category=#{searchCategory}
+		<include refid="search"></include>
+		order by groupNum desc,sequence asc limit #{pageStart},#{perPageNum}
+	</select>
+
+	<select id="getTotalCount" resultType="int">
+		select count(*) from
+		board where category=#{searchCategory}
+		<include refid="search"></include>
+	</select>
+
+	<select id="getOne" resultType="BoardDTO">
+		select * from board where
+		num=#{num}
+	</select>
+
+	<insert id="insert" keyProperty="num" parameterType="BoardDTO"
+		useGeneratedKeys="true">
+		insert into
+		board(title,content,writer,lvl,groupNum,sequence,filename)
+		values(#{title},#{content},#{writer},#{lvl}+1,#{groupNum},#{sequence}+1,#{filename})
+	</insert>
+
+	<update id="updateForSequence">
+		update board set sequence = sequence + 1 where
+		groupNum=#{groupNum} and sequence>#{sequence}
+	</update>
+
+	<update id="updateForGroupNum">
+		update board set groupNum=#{num} where num=#{num}
+	</update>
+
+	<update id="updateCnt">
+		update board set cnt=cnt+1 where num=#{num}
+	</update>
+
+	<delete id="delete">
+		delete from board where num=#{num}
+	</delete>
+
+	<delete id="deleteFromGroupNum">
+		delete from board where groupNum=#{num}
+	</delete>
+
+	<delete id="deleteFromRest">
+		delete from board where num=#{num}
+	</delete>
+
+</mapper>

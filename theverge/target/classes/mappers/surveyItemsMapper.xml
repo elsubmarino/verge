@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.theverge.mapper.surveyItemsMapper">
+	<insert id="insert">
+		insert into
+		survey_items(parentNum,title)
+		values(#{parentNum},#{title})
+	</insert>
+
+	<update id="updateForItem">
+		update survey_items set count=count+1 where num=#{num}
+	</update>
+
+	<select id="getList" resultType="SurveyItemsDTO">
+		select * from survey_items where
+		parentNum=#{num}
+	</select>
+
+	<select id="getMaxCountFromItems" resultType="int">
+		select sum(count)
+		from survey_items where parentNum=#{num}
+	</select>
+</mapper>

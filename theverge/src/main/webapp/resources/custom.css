@@ -1,0 +1,13 @@
+
+.copyright{
+	font-size:100px;	
+	font-family:verdana;
+	font-weight:bold;
+	letter-spacing:-5px;
+	text-transform:uppercase;
+	padding-top:20px;
+}
+body{
+	color:white;
+	background-color:black;
+}
